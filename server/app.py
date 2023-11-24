@@ -51,15 +51,30 @@ class Users(Resource):
 api.add_resource(Users, "/users")
 
 
+# class TokenRefreshResource(Resource):
+#     @jwt_required(refresh=True)
+#     def post(self):
+#         current_user = get_jwt_identity()
+#         access_token = create_access_token(identity=current_user)
+#         return {"access_token": access_token}, 200
+
+
+# api.add_resource(TokenRefreshResource, "/token/refresh")
+
 class TokenRefreshResource(Resource):
     @jwt_required(refresh=True)
     def post(self):
         current_user = get_jwt_identity()
         access_token = create_access_token(identity=current_user)
+
+        # Check if the refresh token is blacklisted
+        refresh_token = request.json.get('refresh_token', None)
+        if refresh_token:
+            jti_refresh = get_jti(refresh_token)
+            if jti_refresh in blacklist:
+                return {"message": "Refresh token is blacklisted"}, 401
+
         return {"access_token": access_token}, 200
-
-
-api.add_resource(TokenRefreshResource, "/token/refresh")
 
 
 class LoginResource(Resource):
@@ -84,10 +99,32 @@ class LoginResource(Resource):
 api.add_resource(LoginResource, "/login")
 
 
+# class LogoutResource(Resource):
+#     @jwt_required()
+#     def post(self):
+#         # Extracting the access token from the Authorization header
+#         auth_header = request.headers.get("Authorization")
+#         if not auth_header or "Bearer " not in auth_header:
+#             return {"message": "Missing or invalid token"}, 400
+
+#         access_token = auth_header.split(" ")[1]
+
+#         # Blacklist the access token
+#         jti_access = get_jti(access_token)
+#         blacklist.add(jti_access)
+
+#         # If the refresh token is provided in the request's JSON, blacklist it as well
+#         refresh_token = request.json.get('refresh_token', None)
+#         if refresh_token:
+#             jti_refresh = get_jti(refresh_token)
+#             blacklist.add(jti_refresh)
+
+#         return {"message": "Successfully logged out."}, 200
+
 class LogoutResource(Resource):
     @jwt_required()
     def post(self):
-        # Extracting the access token from the Authorization header
+
         auth_header = request.headers.get("Authorization")
         if not auth_header or "Bearer " not in auth_header:
             return {"message": "Missing or invalid token"}, 400
