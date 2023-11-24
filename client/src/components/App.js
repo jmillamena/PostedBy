@@ -7,6 +7,7 @@ import Logout from "./Logout";
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "./Dashboard";
 import FriendsContainer from "./FriendsContainer";
+import UserProfile from "./UserProfile";
 
 const App = () => {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -67,6 +68,11 @@ const App = () => {
           component={FriendsContainer}
           isLoggedIn={isLoggedIn}
           userId={userId}
+        />
+        <PrivateRoute
+          path="/profile/:friendId"
+          component={UserProfile} // Use UserProfile component for user profiles
+          isLoggedIn={isLoggedIn}
         />
         <PrivateRoute
           path="/logout"

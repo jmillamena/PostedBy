@@ -175,5 +175,17 @@ class Friends(Resource):
 
 api.add_resource(Friends, "/users/<int:user_id>/friends")
 
+
+class UserProfile(Resource):
+    def get(self, user_id):
+        user = User.query.get_or_404(user_id)
+        user_data = {'id': user.id,
+                     'username': user.username, 'email': user.email}
+        return jsonify({'user': user_data})
+
+
+api.add_resource(UserProfile, "/users/<int:user_id>")
+
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
