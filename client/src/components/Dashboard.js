@@ -3,7 +3,7 @@ import { Redirect } from "react-router-dom";
 
 const Dashboard = () => {
   const [userName, setUserName] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Assuming you set this state somewhere based on user authentication
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   useEffect(() => {
     // Retrieve the username from local storage

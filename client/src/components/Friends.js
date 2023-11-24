@@ -78,7 +78,7 @@ const Friends = ({ userId, token }) => {
   };
 
   if (!userId || !token) {
-    return <div>Loading...</div>; // or another loading indicator
+    return <div>Loading...</div>;
   }
 
   return (

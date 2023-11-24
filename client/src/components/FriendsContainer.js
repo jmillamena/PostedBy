@@ -4,7 +4,7 @@ import Friends from "./Friends";
 
 const FriendsContainer = () => {
   const userId = localStorage.getItem("user_id");
-  const token = localStorage.getItem("access_token"); // Replace with the actual access token
+  const token = localStorage.getItem("access_token");
 
   return <Friends userId={userId} token={token} />;
 };
