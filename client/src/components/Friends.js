@@ -51,6 +51,7 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Friends = ({ userId, token }) => {
   const [friends, setFriends] = useState([]);
@@ -81,12 +82,23 @@ const Friends = ({ userId, token }) => {
     return <div>Loading...</div>;
   }
 
+  const handleViewProfile = (friendId) => {
+    // You can navigate to the friend's profile page using react-router-dom or any other method
+    console.log(`Viewing profile of friend with ID: ${friendId}`);
+  };
+
   return (
     <div>
       <h2>Friends</h2>
       <ul>
         {friends.map((friend) => (
-          <li key={friend.id}>{friend.username}</li>
+          <li key={friend.id}>
+            <Link to={`/profile/${friend.id}`}>{friend.username}</Link>
+            {/* Add a button or link to the friend's profile page */}
+            <button onClick={() => handleViewProfile(friend.id)}>
+              View Profile
+            </button>
+          </li>
         ))}
       </ul>
     </div>
