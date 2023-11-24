@@ -51,30 +51,30 @@ class Users(Resource):
 api.add_resource(Users, "/users")
 
 
-# class TokenRefreshResource(Resource):
-#     @jwt_required(refresh=True)
-#     def post(self):
-#         current_user = get_jwt_identity()
-#         access_token = create_access_token(identity=current_user)
-#         return {"access_token": access_token}, 200
-
-
-# api.add_resource(TokenRefreshResource, "/token/refresh")
-
 class TokenRefreshResource(Resource):
     @jwt_required(refresh=True)
     def post(self):
         current_user = get_jwt_identity()
         access_token = create_access_token(identity=current_user)
-
-        # Check if the refresh token is blacklisted
-        refresh_token = request.json.get('refresh_token', None)
-        if refresh_token:
-            jti_refresh = get_jti(refresh_token)
-            if jti_refresh in blacklist:
-                return {"message": "Refresh token is blacklisted"}, 401
-
         return {"access_token": access_token}, 200
+
+
+api.add_resource(TokenRefreshResource, "/token/refresh")
+
+# class TokenRefreshResource(Resource):
+#     @jwt_required(refresh=True)
+#     def post(self):
+#         current_user = get_jwt_identity()
+#         access_token = create_access_token(identity=current_user)
+
+#         # Check if the refresh token is blacklisted
+#         refresh_token = request.json.get('refresh_token', None)
+#         if refresh_token:
+#             jti_refresh = get_jti(refresh_token)
+#             if jti_refresh in blacklist:
+#                 return {"message": "Refresh token is blacklisted"}, 401
+
+#         return {"access_token": access_token}, 200
 
 
 class LoginResource(Resource):
@@ -145,6 +145,35 @@ class LogoutResource(Resource):
 
 
 api.add_resource(LogoutResource, '/logout')
+
+
+class Friends(Resource):
+    def get(self, user_id):
+        user = User.query.get_or_404(user_id)
+        friends = user.friends.all()
+        friends_data = [{'id': friend.id, 'username': friend.username}
+                        for friend in friends]
+        return jsonify({'friends': friends_data})
+
+    def post(self, user_id):
+        data = request.get_json()
+        friend_id = data.get('friend_id')
+
+        user = User.query.get_or_404(user_id)
+        friend = User.query.get_or_404(friend_id)
+
+        # Check if the friendship already exists
+        if friend in user.friends:
+            return {'message': 'Friendship already exists.'}, 400
+
+        # Add the friend to the user's friends
+        user.friends.append(friend)
+        db.session.commit()
+
+        return {'message': f'{friend.username} is now your friend.'}, 201
+
+
+api.add_resource(Friends, "/users/<int:user_id>/friends")
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
