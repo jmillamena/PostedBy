@@ -15,7 +15,7 @@ const Logout = () => {
           {},
           {
             headers: {
-              Authorization: `Bearer ${accessToken}`,
+              Authorization: `Bearer  localStorage.getItem("access_token")`,
             },
           }
         );
@@ -37,7 +37,7 @@ const Logout = () => {
 
   return (
     <div>
-      <p>Your component content</p>
+      <p>Logout</p>
       <button onClick={handleLogout}>Logout</button>
     </div>
   );

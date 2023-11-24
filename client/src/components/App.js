@@ -6,6 +6,7 @@ import Register from "./Register";
 import Logout from "./Logout";
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "./Dashboard";
+import FriendsContainer from "./FriendsContainer";
 
 const App = () => {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -40,6 +41,7 @@ const App = () => {
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
         userName={userName}
+        userId={userId}
       />
       <Switch>
         <Route
@@ -58,6 +60,13 @@ const App = () => {
           path="/dashboard"
           component={Dashboard}
           isLoggedIn={isLoggedIn}
+        />
+
+        <PrivateRoute
+          path="/friends"
+          component={FriendsContainer}
+          isLoggedIn={isLoggedIn}
+          userId={userId}
         />
         <PrivateRoute
           path="/logout"

@@ -39,6 +39,9 @@ const Navbar = ({ isLoggedIn }) => {
               <Link to="/dashboard">Dashboard</Link>
             </li>
             <li>
+              <Link to="/friends">Friends</Link>
+            </li>
+            <li>
               <button onClick={handleLogout}>Logout</button>
             </li>
           </>
