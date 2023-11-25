@@ -4,18 +4,22 @@
 
 # Remote library imports
 from flask import request, jsonify
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 
 # Local imports
 from config import app, db, api, bcrypt
 # Add your model imports
-from models import User
+from models import User, Post
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, get_jti, create_refresh_token
-
 # Views go here!
 jwt = JWTManager(app)
 
 blacklist = set()
+
+parser = reqparse.RequestParser()
+parser.add_argument('content_text', type=str, help='Text content of the post')
+parser.add_argument('content_image', type=str,
+                    help='Image content of the post')
 
 
 @app.route('/')
@@ -185,6 +189,54 @@ class UserProfile(Resource):
 
 
 api.add_resource(UserProfile, "/users/<int:user_id>")
+
+
+class PostsByAuthorResource(Resource):
+    def get(self):
+        author_id = request.args.get('author_id')
+        if author_id is None:
+            return {'error': 'Missing author_id parameter'}, 400
+
+        # Fetch posts based on the author_id
+        posts = Post.query.filter_by(author_id=author_id).all()
+
+        # Return a list of posts
+        return [{'id': post.id, 'content_text': post.content_text, 'timestamp': post.timestamp.isoformat()} for post in posts]
+
+
+# Add the resource to the API
+api.add_resource(PostsByAuthorResource, '/posts')
+
+
+class PostResource(Resource):
+    @jwt_required()
+    def post(self):
+        args = parser.parse_args()
+        current_user_id = get_jwt_identity()
+
+        # Fetch the current user based on the identity
+        current_user = User.query.filter_by(email=current_user_id).first()
+
+        if 'content_image' in args and args['content_image'] is not None:
+            content_image = args['content_image'].read()
+        else:
+            content_image = None
+
+        # Create a new post with the current user as the author
+        new_post = Post(
+            content_text=args['content_text'],
+            content_image=content_image,
+            author=current_user  # Set the author of the post
+        )
+
+        db.session.add(new_post)
+        db.session.commit()
+
+        return {'message': 'Post created successfully', 'post': new_post.to_dict()}, 201
+
+
+# Add the resource to the API
+api.add_resource(PostResource, '/posts')
 
 
 if __name__ == '__main__':

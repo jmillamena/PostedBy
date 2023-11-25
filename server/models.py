@@ -1,7 +1,9 @@
+from sqlalchemy import DateTime, LargeBinary
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy import Table, Column, String, Integer, ForeignKey, DateTime
 from sqlalchemy.orm import validates
+from datetime import datetime
 
 from config import db, bcrypt
 
@@ -68,3 +70,29 @@ class User(db.Model):
 
     def __repr__(self):
         return f'(id={self.id}, name={self.name}, username={self.username}, email={self.email})'
+
+    from datetime import datetime
+
+
+class Post(db.Model):
+    __tablename__ = 'posts'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    content_text = db.Column(db.Text)
+    content_image = db.Column(LargeBinary)
+    timestamp = db.Column(DateTime, default=datetime.utcnow, nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    author = db.relationship("User", backref="posts")
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'content_text': self.content_text,
+            'content_image': self.content_image,
+            'timestamp': self.timestamp.isoformat(),
+            'author_id': self.author_id,
+            'author': self.author.to_dict()
+        }
+
+    def __repr__(self):
+        return f'<Post {self.content_text}, {self.content_image}, {self.timestamp}, {self.author}>'
