@@ -19,7 +19,7 @@ const PostForm = ({ onSubmit }) => {
       onSubmit={onSubmit}
     >
       {({ isSubmitting, setFieldValue }) => (
-        <Form enctype="multipart/form-data">
+        <Form encType="multipart/form-data">
           <div>
             <label htmlFor="contentText">Content:</label>
             <Field as="textarea" id="contentText" name="contentText" />
@@ -39,7 +39,7 @@ const PostForm = ({ onSubmit }) => {
           </div>
           {/* Add other fields here */}
           <button type="submit" disabled={isSubmitting}>
-            Create Post
+            Submit Post
           </button>
         </Form>
       )}

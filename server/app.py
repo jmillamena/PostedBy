@@ -180,6 +180,21 @@ class Friends(Resource):
 api.add_resource(Friends, "/users/<int:user_id>/friends")
 
 
+class GetFriends(Resource):
+    @jwt_required()
+    def get(self):
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(email=current_user_id).first()
+
+        friends = current_user.friends.all()
+        friends_data = [{'id': friend.id, 'username': friend.username}
+                        for friend in friends]
+        return jsonify({'friends': friends_data})
+
+
+api.add_resource(GetFriends, "/friends")
+
+
 class UserProfile(Resource):
     def get(self, user_id):
         user = User.query.get_or_404(user_id)
