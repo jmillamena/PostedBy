@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FormControl, InputGroup } from "react-bootstrap";
 import HomeCard from "./HomeCard";
 import axios from "axios";
+import "./homestyle.css";
 
 function Home() {
   const [users, setUsers] = useState([]);
@@ -34,7 +35,7 @@ function Home() {
 
   return (
     <div>
-      <h2>Explore Users</h2>
+      <h2 className="homeTitle">Explore Users</h2>
       <InputGroup className="mb-3">
         <FormControl
           placeholder="Search users..."

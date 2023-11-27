@@ -60,7 +60,8 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import FriendsCard from "./FriendsCard"; // Import the new component
+import FriendsCard from "./FriendsCard";
+import "./homestyle.css";
 
 const Friends = ({ userId, token }) => {
   const [friends, setFriends] = useState([]);
@@ -98,7 +99,7 @@ const Friends = ({ userId, token }) => {
 
   return (
     <div>
-      <h2>Friends</h2>
+      <h2 className="homeTitle">Friends</h2>
       <input
         type="text"
         placeholder="Search friends..."
