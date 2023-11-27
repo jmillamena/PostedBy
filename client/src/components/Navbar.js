@@ -1,5 +1,7 @@
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
+import { Navbar as BootstrapNavbar, Nav, Button } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const Navbar = ({ isLoggedIn }) => {
   const history = useHistory();
@@ -19,35 +21,38 @@ const Navbar = ({ isLoggedIn }) => {
   };
 
   return (
-    <nav>
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        {!isLoggedIn ? (
-          <>
-            <li>
-              <Link to="/login">Login</Link>
-            </li>
-            <li>
-              <Link to="/register">Register</Link>
-            </li>
-          </>
-        ) : (
-          <>
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
-            <li>
-              <Link to="/friends">Friends</Link>
-            </li>
-            <li>
-              <button onClick={handleLogout}>Logout</button>
-            </li>
-          </>
-        )}
-      </ul>
-    </nav>
+    <BootstrapNavbar bg="light" expand="lg">
+      <BootstrapNavbar.Brand as={Link} to="/">
+        Home
+      </BootstrapNavbar.Brand>
+      <BootstrapNavbar.Toggle aria-controls="basic-navbar-nav" />
+      <BootstrapNavbar.Collapse id="basic-navbar-nav">
+        <Nav className="mr-auto">
+          {!isLoggedIn ? (
+            <>
+              <Nav.Link as={Link} to="/login">
+                Login
+              </Nav.Link>
+              <Nav.Link as={Link} to="/register">
+                Register
+              </Nav.Link>
+            </>
+          ) : (
+            <>
+              <Nav.Link as={Link} to="/dashboard">
+                Dashboard
+              </Nav.Link>
+              <Nav.Link as={Link} to="/friends">
+                Friends
+              </Nav.Link>
+              <Button variant="outline-danger" onClick={handleLogout}>
+                Logout
+              </Button>
+            </>
+          )}
+        </Nav>
+      </BootstrapNavbar.Collapse>
+    </BootstrapNavbar>
   );
 };
 
