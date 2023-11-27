@@ -11,14 +11,16 @@ from config import app, db, api, bcrypt
 # Add your model imports
 from models import User, Post
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, get_jti, create_refresh_token
+from werkzeug.datastructures import FileStorage
 # Views go here!
+
 jwt = JWTManager(app)
 
 blacklist = set()
 
 parser = reqparse.RequestParser()
 parser.add_argument('content_text', type=str, help='Text content of the post')
-parser.add_argument('content_image', type=str,
+parser.add_argument('content_image', type=str, location='files',
                     help='Image content of the post')
 
 
@@ -229,15 +231,15 @@ class PostResource(Resource):
         args = parser.parse_args()
         current_user_id = get_jwt_identity()
 
-        # Fetch the current user based on the identity
+        # Fetching the current
         current_user = User.query.filter_by(email=current_user_id).first()
 
         if 'content_image' in args and args['content_image'] is not None:
-            content_image = args['content_image'].read()
+            content_image = request.files['content_image'].read()
         else:
             content_image = None
 
-        # Create a new post with the current user as the author
+        # Creates  post with the current user as the author
         new_post = Post(
             content_text=args['content_text'],
             content_image=content_image,

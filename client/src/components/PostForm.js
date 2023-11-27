@@ -4,40 +4,46 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 const PostFormSchema = Yup.object().shape({
-  contentText: Yup.string(),
+  content_text: Yup.string(),
   contentImage: Yup.mixed().nullable(),
 });
 
-const PostForm = ({ onSubmit }) => {
+const PostForm = ({ onSubmit, authorId }) => {
+  console.log("Author ID in PostForm:", authorId);
+
+  if (authorId === undefined || authorId === null) {
+    return <div>Error: Author ID is missing.</div>;
+  }
   return (
     <Formik
       initialValues={{
-        contentText: "",
-        contentImage: null,
+        content_text: "",
+        content_image: null,
+        author_id: authorId,
       }}
       validationSchema={PostFormSchema}
       onSubmit={onSubmit}
     >
-      {({ isSubmitting, setFieldValue }) => (
+      {({ isSubmitting, setFieldValue, handleBlur }) => (
         <Form encType="multipart/form-data">
           <div>
-            <label htmlFor="contentText">Content:</label>
-            <Field as="textarea" id="contentText" name="contentText" />
-            <ErrorMessage name="contentText" component="div" />
+            <label htmlFor="content_text">Content:</label>
+            <Field as="textarea" id="content_text" name="content_text" />
+            <ErrorMessage name="content_text" component="div" />
           </div>
           <div>
-            <label htmlFor="contentImage">Image:</label>
+            <label htmlFor="content_image">Image:</label>
             <Field
               type="file"
-              id="contentImage"
-              name="contentImage"
+              id="content_image"
+              name="content_image"
               onChange={(event) => {
-                setFieldValue("contentImage", event.currentTarget.files[0]);
+                setFieldValue("content_image", event.currentTarget.files[0]);
               }}
+              onBlur={handleBlur}
             />
-            <ErrorMessage name="contentImage" component="div" />
+            <ErrorMessage name="content_image" component="div" />
           </div>
-          {/* Add other fields here */}
           <button type="submit" disabled={isSubmitting}>
             Submit Post
           </button>
