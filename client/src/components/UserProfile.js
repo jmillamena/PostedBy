@@ -39,7 +39,6 @@ const UserProfile = ({ match }) => {
   };
 
   useEffect(() => {
-    // Call fetchFriendProfile
     fetchFriendProfile();
   }, [friendId]);
 

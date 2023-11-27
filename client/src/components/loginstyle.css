@@ -1,0 +1,34 @@
+/* color palette:
+sandy brown: #F4A460
+nude: #E3BC9A
+wheat: #F5DEB3
+cornsilk:#FFF8DC
+dusty rose: #dcae96
+papaya whip: #ffefd5
+peach puff: #ffdab9
+oatmeal: #D0C4AB
+beige: #f5f5dc
+ */
+
+.custom-form-control {
+  background-color: #fff8dc;
+  color: #495057;
+  border: 1px solid #ced4da;
+}
+
+.custom-submit-button {
+  background-color: #f4a460;
+  color: #fff;
+  border: 1px solid #007bff;
+}
+
+.custom-login-form {
+  background-color: #ffefd5;
+  border: 1px solid #ced4da;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+body {
+  background-color: #f5f5dc;
+}
