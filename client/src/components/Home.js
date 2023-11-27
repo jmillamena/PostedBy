@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { FormControl, InputGroup } from "react-bootstrap";
+import HomeCard from "./HomeCard"; // Import the new component
+import axios from "axios";
 
 function Home() {
   const [users, setUsers] = useState([]);
@@ -7,22 +9,19 @@ function Home() {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5555/users")
+    axios
+      .get("http://127.0.0.1:5555/users")
       .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Failed to fetch users: ${response.status}`);
+        if (!response.data || !response.data.users) {
+          throw new Error("Invalid response from server");
         }
-        return response.json();
-      })
-      .then((data) => {
-        setUsers(data.users || []);
+        setUsers(response.data.users);
       })
       .catch((error) => {
         console.error("Error fetching users", error);
         setUsers([]);
       });
 
-    // Fetch the ID of the logged-in user from local storage
     const storedUserId = localStorage.getItem("user_id");
     if (storedUserId) {
       setLoggedInUserId(Number(storedUserId));
@@ -36,24 +35,22 @@ function Home() {
   return (
     <div>
       <h2>Explore Users</h2>
-      <div>
-        <input
-          type="text"
+      <InputGroup className="mb-3">
+        <FormControl
           placeholder="Search users..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-      </div>
+      </InputGroup>
       <div>
         {filteredUsers.map(
           (user) =>
-            // Exclude the logged-in user from the list
             user.id !== loggedInUserId && (
-              <div className="users" key={user.id}>
-                <Link to={`/profile/${user.id}`}>
-                  <p>{user.username}</p>
-                </Link>
-              </div>
+              <HomeCard
+                key={user.id}
+                user={user}
+                loggedInUserId={loggedInUserId}
+              />
             )
         )}
       </div>
