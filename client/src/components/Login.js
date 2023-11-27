@@ -3,6 +3,13 @@ import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import {
+  FormGroup,
+  FormLabel,
+  FormControl,
+  Button,
+  Alert,
+} from "react-bootstrap";
 
 const LoginSchema = Yup.object().shape({
   identifier: Yup.string().required("Email or Username is required"),
@@ -33,7 +40,6 @@ const Login = ({ setIsLoggedIn, setUserName, setUserId }) => {
       }
     } catch (error) {
       console.error("Login error", error);
-      console.error(error);
       setFieldError("password", "Login error");
     } finally {
       setSubmitting(false);
@@ -53,24 +59,30 @@ const Login = ({ setIsLoggedIn, setUserName, setUserId }) => {
       >
         {({ isSubmitting }) => (
           <Form>
-            <div>
-              <label htmlFor="identifier">Email or Username:</label>
-              <Field type="text" id="identifier" name="identifier" />
-              <ErrorMessage name="identifier" component="div" />
-            </div>
-            <div>
-              <label htmlFor="password">Password:</label>
+            <FormGroup>
+              <FormLabel>Email or Username:</FormLabel>
               <Field
+                as={FormControl}
+                type="text"
+                id="identifier"
+                name="identifier"
+              />
+              <ErrorMessage name="identifier" component="div" />
+            </FormGroup>
+            <FormGroup>
+              <FormLabel>Password:</FormLabel>
+              <Field
+                as={FormControl}
                 type="password"
                 id="password"
                 name="password"
                 autoComplete="current-password"
               />
               <ErrorMessage name="password" component="div" />
-            </div>
-            <button type="submit" disabled={isSubmitting}>
+            </FormGroup>
+            <Button type="submit" disabled={isSubmitting}>
               Login
-            </button>
+            </Button>
           </Form>
         )}
       </Formik>
