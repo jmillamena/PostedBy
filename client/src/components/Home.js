@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 function Home() {
   const [users, setUsers] = useState([]);
   const [loggedInUserId, setLoggedInUserId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetch("http://127.0.0.1:5555/users")
@@ -28,11 +29,23 @@ function Home() {
     }
   }, []);
 
+  const filteredUsers = users.filter((user) =>
+    user.username.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       <h2>Explore Users</h2>
       <div>
-        {users.map(
+        <input
+          type="text"
+          placeholder="Search users..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+      <div>
+        {filteredUsers.map(
           (user) =>
             // Exclude the logged-in user from the list
             user.id !== loggedInUserId && (
