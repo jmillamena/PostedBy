@@ -1,15 +1,14 @@
+// Login.js
+
 import React from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import {
-  FormGroup,
-  FormLabel,
-  FormControl,
-  Button,
-  Alert,
-} from "react-bootstrap";
+import { FormGroup, FormLabel, FormControl, Button } from "react-bootstrap";
+
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./loginstyle.css";
 
 const LoginSchema = Yup.object().shape({
   identifier: Yup.string().required("Email or Username is required"),
@@ -47,7 +46,7 @@ const Login = ({ setIsLoggedIn, setUserName, setUserId }) => {
   };
 
   return (
-    <div>
+    <div className="custom-login-form">
       <h2>Login</h2>
       <Formik
         initialValues={{
@@ -66,6 +65,7 @@ const Login = ({ setIsLoggedIn, setUserName, setUserId }) => {
                 type="text"
                 id="identifier"
                 name="identifier"
+                className="custom-form-control"
               />
               <ErrorMessage name="identifier" component="div" />
             </FormGroup>
@@ -77,10 +77,15 @@ const Login = ({ setIsLoggedIn, setUserName, setUserId }) => {
                 id="password"
                 name="password"
                 autoComplete="current-password"
+                className="custom-form-control"
               />
               <ErrorMessage name="password" component="div" />
             </FormGroup>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="custom-submit-button"
+            >
               Login
             </Button>
           </Form>
