@@ -142,11 +142,6 @@ const Friends = ({ userId, token }) => {
     return <div>Loading...</div>;
   }
 
-  const handleViewProfile = (friendId) => {
-    // You can navigate to the friend's profile page using react-router-dom or any other method
-    console.log(`Viewing profile of friend with ID: ${friendId}`);
-  };
-
   return (
     <div>
       <h2>Friends</h2>
@@ -154,10 +149,6 @@ const Friends = ({ userId, token }) => {
         {friends.map((friend) => (
           <li key={friend.id}>
             <Link to={`/profile/${friend.id}`}>{friend.username}</Link>
-            {/* Add a button or link to the friend's profile page */}
-            <button onClick={() => handleViewProfile(friend.id)}>
-              View Profile
-            </button>
           </li>
         ))}
       </ul>
