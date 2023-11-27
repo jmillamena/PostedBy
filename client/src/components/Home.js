@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FormControl, InputGroup } from "react-bootstrap";
-import HomeCard from "./HomeCard"; // Import the new component
+import HomeCard from "./HomeCard";
 import axios from "axios";
 
 function Home() {
@@ -42,7 +42,7 @@ function Home() {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </InputGroup>
-      <div>
+      <div style={{ display: "flex", flexWrap: "wrap" }}>
         {filteredUsers.map(
           (user) =>
             user.id !== loggedInUserId && (

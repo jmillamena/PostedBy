@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const HomeCard = ({ user, loggedInUserId }) => {
   return (
-    <Card key={user.id} style={{ width: "18rem" }}>
+    <Card key={user.id} style={{ width: "18rem", margin: "10px" }}>
       <Card.Body>
         <Card.Title>
           <Link to={`/profile/${user.id}`}>{user.username}</Link>
