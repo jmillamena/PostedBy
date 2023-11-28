@@ -293,6 +293,7 @@
 // UserProfile.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Button, Alert } from "react-bootstrap";
 import PostForm from "./PostForm";
 import Posts from "./Posts";
 
@@ -302,21 +303,17 @@ const UserProfile = ({ match }) => {
   const [showPostForm, setShowPostForm] = useState(false);
   const [isFriends, setIsFriends] = useState(false);
   const [userId, setUserId] = useState(null);
-  const [recipientId, setRecipientId] = useState(null); // New state for recipientId
+  const [recipientId, setRecipientId] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null); // New state for success message
 
-  // Define fetchFriendProfile outside of useEffect
   const fetchFriendProfile = async () => {
     try {
       const response = await axios.get(
         `http://127.0.0.1:5555/users/${friendId}`
       );
       setFriendProfile(response.data.user);
-
-      // Set the recipientId to the user profile being viewed
       setRecipientId(response.data.user.id);
 
-      // Check if the logged-in user is friends with the person
-      // whose profile they are viewing
       const token = localStorage.getItem("access_token");
       const loggedInUserId = localStorage.getItem("user_id");
 
@@ -324,27 +321,21 @@ const UserProfile = ({ match }) => {
         const friendsResponse = await axios.get(
           `http://127.0.0.1:5555/users/${loggedInUserId}/friends`
         );
-
         const friendsIds = friendsResponse.data.friends.map(
           (friend) => friend.id
         );
         setIsFriends(friendsIds.includes(response.data.user.id));
-        setUserId(loggedInUserId); // Set userId here
+        setUserId(loggedInUserId);
       }
     } catch (error) {
       console.error("Error fetching friend profile", error);
     }
   };
 
-  useEffect(() => {
-    fetchFriendProfile();
-  }, [friendId]);
-
-  // Add user as friend
   const handleAddFriend = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      const response = await axios.post(
+      await axios.post(
         `http://127.0.0.1:5555/users/${userId}/friends`,
         { friend_id: friendId },
         {
@@ -354,7 +345,6 @@ const UserProfile = ({ match }) => {
         }
       );
 
-      // If the friend request is sent successfully, update state
       setIsFriends(true);
       console.log(`Friend request sent to user with ID ${friendId}`);
     } catch (error) {
@@ -363,7 +353,6 @@ const UserProfile = ({ match }) => {
   };
 
   const handlePostSubmit = async (values, actions) => {
-    // Your post submit logic here
     console.log("Post form values:", values);
 
     const token = localStorage.getItem("access_token");
@@ -373,7 +362,7 @@ const UserProfile = ({ match }) => {
         "http://127.0.0.1:5555/posts",
         {
           content_text: values.postContent,
-          author_id: userId, // Assuming userId is defined in your component
+          author_id: userId,
           recipient_id: values.recipientId,
           content_image: values.postImage,
         },
@@ -384,33 +373,52 @@ const UserProfile = ({ match }) => {
         }
       );
 
-      // Handle success, if needed
       console.log("Post created successfully", response.data);
 
-      // Reset the form and hide the post form
+      setSuccessMessage("Post created successfully");
+
+      window.location.reload();
+
       setShowPostForm(false);
     } catch (error) {
       console.error("Error creating post", error);
-      // Handle errors as needed
       actions.setFieldError("postContent", "Error creating post");
     } finally {
       actions.setSubmitting(false);
     }
   };
 
+  useEffect(() => {
+    fetchFriendProfile();
+  }, [friendId]);
+
   return (
     <div>
       <h2>{friendProfile?.username}'s Profile</h2>
+      {successMessage && (
+        <Alert
+          variant="success"
+          onClose={() => setSuccessMessage(null)}
+          dismissible
+        >
+          {successMessage}
+        </Alert>
+      )}
       {isFriends ? (
-        <button onClick={() => setShowPostForm(!showPostForm)}>
+        <Button
+          variant="primary"
+          onClick={() => setShowPostForm(!showPostForm)}
+        >
           {showPostForm ? "Hide Post Form" : "Create Post"}
-        </button>
+        </Button>
       ) : (
         <div>
           <p>
             You must be friends with {friendProfile?.username} to create a post.
           </p>
-          <button onClick={handleAddFriend}>Add Friend</button>
+          <Button variant="success" onClick={handleAddFriend}>
+            Add Friend
+          </Button>
         </div>
       )}
 
@@ -418,8 +426,8 @@ const UserProfile = ({ match }) => {
         <PostForm
           onSubmit={handlePostSubmit}
           authorId={userId}
-          friends={[friendProfile]} // Pass the friend as an array
-          initialRecipientId={recipientId} // Pass the initialRecipientId
+          friends={[friendProfile]}
+          initialRecipientId={recipientId}
         />
       )}
 
