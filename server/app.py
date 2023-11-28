@@ -97,6 +97,7 @@ class LoginResource(Resource):
                 "access_token": access_token,
                 "refresh_token": refresh_token,
                 "user_name": user.name,
+                "username": user.username,
                 "user_id": user.id
             }, 200
         return {"message": "Invalid email, username, or password."}, 401
