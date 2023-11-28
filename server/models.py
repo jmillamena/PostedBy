@@ -79,10 +79,15 @@ class Post(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     content_text = db.Column(db.Text)
-    content_image = db.Column(LargeBinary)
+    content_image = db.Column(db.String)
     timestamp = db.Column(DateTime, default=datetime.utcnow, nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    recipient_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     author = db.relationship("User", backref="posts")
+    author = db.relationship("User", foreign_keys=[
+                             author_id], backref="authored_posts")
+    recipient = db.relationship(
+        "User", foreign_keys=[recipient_id], backref="received_posts")
 
     def to_dict(self):
         return {
@@ -91,7 +96,9 @@ class Post(db.Model):
             'content_image': self.content_image,
             'timestamp': self.timestamp.isoformat(),
             'author_id': self.author_id,
-            'author': self.author.to_dict()
+            'recipient_id': self.recipient_id,
+            'author': self.author.to_dict(),
+            'recipient': self.recipient.to_dict()
         }
 
     def __repr__(self):

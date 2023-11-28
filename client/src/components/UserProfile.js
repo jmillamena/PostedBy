@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import PostForm from "./PostForm";
+import Posts from "./Posts";
 
 const UserProfile = ({ match }) => {
   const { friendId } = match.params;
   const [friendProfile, setFriendProfile] = useState(null);
   const [showPostForm, setShowPostForm] = useState(false);
   const [isFriends, setIsFriends] = useState(false);
-  const [userId, setUserId] = useState(null); // Add userId state
+  const [userId, setUserId] = useState(null);
+  const [posts, setPosts] = useState([]);
 
   // Define fetchFriendProfile outside of useEffect
   const fetchFriendProfile = async () => {
@@ -137,6 +139,8 @@ const UserProfile = ({ match }) => {
           authorId={userId}
         />
       )}
+
+      <Posts recipientId={friendId} />
     </div>
   );
 };

@@ -8,10 +8,9 @@
 // import Dashboard from "./Dashboard";
 // import FriendsContainer from "./FriendsContainer";
 // import UserProfile from "./UserProfile";
+// import Home from "./Home";
 
 // const App = () => {
-//   // const [isLoggedIn, setIsLoggedIn] = useState(false);
-
 //   const [isLoggedIn, setIsLoggedIn] = useState(
 //     Boolean(localStorage.getItem("access_token"))
 //   );
@@ -45,6 +44,7 @@
 //         userId={userId}
 //       />
 //       <Switch>
+//         <Route path="/" component={Home} exact />
 //         <Route
 //           path="/login"
 //           render={(props) => (
@@ -71,13 +71,7 @@
 //         />
 //         <PrivateRoute
 //           path="/profile/:friendId"
-//           render={(props) => (
-//             <UserProfile
-//               {...props}
-//               userId={userId}
-//               token={localStorage.getItem("access_token")}
-//             />
-//           )}
+//           component={UserProfile} // Use UserProfile component for user profiles
 //           isLoggedIn={isLoggedIn}
 //         />
 //         <PrivateRoute
@@ -100,7 +94,8 @@
 
 // export default App;
 
-import React, { useState, useEffect } from "react";
+//change to useContext for authorization
+import React, { useState, useEffect, createContext, useContext } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Navbar from "./Navbar";
 import Login from "./Login";
@@ -111,10 +106,12 @@ import Dashboard from "./Dashboard";
 import FriendsContainer from "./FriendsContainer";
 import UserProfile from "./UserProfile";
 import Home from "./Home";
+import CreatePost from "./CreatePost";
 
-const App = () => {
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+// Create a context for authentication
+const AuthContext = createContext();
 
+const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(
     Boolean(localStorage.getItem("access_token"))
   );
@@ -134,66 +131,52 @@ const App = () => {
 
     setIsLoggedIn(Boolean(localStorage.getItem("access_token")));
   }, []);
+
   function updateUserName(newName) {
     setUserName(newName);
     localStorage.setItem("user_name", newName);
   }
 
   return (
-    <Router>
-      <Navbar
-        isLoggedIn={isLoggedIn}
-        setIsLoggedIn={setIsLoggedIn}
-        userName={userName}
-        userId={userId}
-      />
-      <Switch>
-        <Route path="/" component={Home} exact />
-        <Route
-          path="/login"
-          render={(props) => (
-            <Login
-              {...props}
-              setIsLoggedIn={setIsLoggedIn}
-              setUserName={setUserName}
-              setUserId={setUserId}
-            />
-          )}
-        />
-        <Route path="/register" component={Register} />
-        <PrivateRoute
-          path="/dashboard"
-          component={Dashboard}
-          isLoggedIn={isLoggedIn}
-        />
+    <AuthContext.Provider
+      value={{
+        isLoggedIn,
+        setIsLoggedIn,
+        userName,
+        setUserName,
+        userId,
+        setUserId,
+        updateUserName,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
 
-        <PrivateRoute
-          path="/friends"
-          component={FriendsContainer}
-          isLoggedIn={isLoggedIn}
-          userId={userId}
-        />
-        <PrivateRoute
-          path="/profile/:friendId"
-          component={UserProfile} // Use UserProfile component for user profiles
-          isLoggedIn={isLoggedIn}
-        />
-        <PrivateRoute
-          path="/logout"
-          render={(props) => (
-            <Logout
-              {...props}
-              setIsLoggedIn={setIsLoggedIn}
-              setUserName={setUserName}
-              setUserId={setUserId}
-              isLoggedIn={setIsLoggedIn}
-            />
-          )}
-        />
-        {/* Other private routes go here */}
-      </Switch>
+const useAuth = () => {
+  return useContext(AuthContext);
+};
+
+const App = () => {
+  return (
+    <Router>
+      <AuthProvider>
+        <Navbar />
+        <Switch>
+          <Route path="/" component={Home} exact />
+          <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
+          <PrivateRoute path="/dashboard" component={Dashboard} />
+          <PrivateRoute path="/friends" component={FriendsContainer} />
+          <PrivateRoute path="/profile/:friendId" component={UserProfile} />
+          <PrivateRoute path="/create-post" component={CreatePost} />
+          <PrivateRoute path="/logout" component={Logout} />
+        </Switch>
+      </AuthProvider>
     </Router>
   );
 };
 
+export { useAuth };
 export default App;
