@@ -2,14 +2,21 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { FormGroup, FormLabel, FormControl, Button } from "react-bootstrap";
+import {
+  FormGroup,
+  FormLabel,
+  FormControl,
+  Button,
+  Dropdown,
+} from "react-bootstrap";
 import { useAuth } from "./App";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const CreatePostSchema = Yup.object().shape({
-  friendId: Yup.string().required("Friend is required"),
+  recipientId: Yup.string().required("Recipient is required"),
   postContent: Yup.string().required("Post content is required"),
+  postImage: Yup.string().url("Invalid URL"),
 });
 
 const CreatePost = () => {
@@ -30,6 +37,8 @@ const CreatePost = () => {
     };
 
     fetchFriends();
+
+    console.log("UserId:", userId);
   }, [userId]);
 
   return (
@@ -37,17 +46,22 @@ const CreatePost = () => {
       <h2>Create Post</h2>
       <Formik
         initialValues={{
-          friendId: "",
+          recipientId: "",
           postContent: "",
+          postImage: "",
         }}
         validationSchema={CreatePostSchema}
         onSubmit={async (values, { setSubmitting }) => {
           try {
+            console.log("UserId in onSubmit:", userId);
+            console.log("Form Values:", values);
             const response = await axios.post(
               "http://127.0.0.1:5555/posts",
               {
                 content_text: values.postContent,
                 author_id: userId,
+                recipient_id: values.recipientId,
+                content_image: values.postImage,
               },
               {
                 headers: {
@@ -71,14 +85,14 @@ const CreatePost = () => {
           }
         }}
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting, setFieldValue }) => (
           <Form>
             <FormGroup>
-              <FormLabel>Friend:</FormLabel>
+              <FormLabel>Recipient:</FormLabel>
               <Field
                 as="select"
-                id="friendId"
-                name="friendId"
+                id="recipientId"
+                name="recipientId"
                 className="custom-form-control"
               >
                 <option value="" disabled>
@@ -90,7 +104,7 @@ const CreatePost = () => {
                   </option>
                 ))}
               </Field>
-              <ErrorMessage name="friendId" component="div" />
+              <ErrorMessage name="recipientId" component="div" />
             </FormGroup>
             <FormGroup>
               <FormLabel>Post Content:</FormLabel>
@@ -102,6 +116,17 @@ const CreatePost = () => {
                 className="custom-form-control"
               />
               <ErrorMessage name="postContent" component="div" />
+            </FormGroup>
+            <FormGroup>
+              <FormLabel>Post Image URL:</FormLabel>
+              <Field
+                as={FormControl}
+                type="text"
+                id="postImage"
+                name="postImage"
+                className="custom-form-control"
+              />
+              <ErrorMessage name="postImage" component="div" />
             </FormGroup>
             <Button
               type="submit"

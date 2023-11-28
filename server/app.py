@@ -20,7 +20,8 @@ blacklist = set()
 
 parser = reqparse.RequestParser()
 parser.add_argument('content_text', type=str, help='Text content of the post')
-parser.add_argument('content_image', type=str, location='files',
+parser.add_argument('recipient_id', type=int, help='Recipient ID of the post')
+parser.add_argument('content_image', type=str,
                     help='Image content of the post')
 
 
@@ -226,25 +227,106 @@ class PostsByAuthorResource(Resource):
 api.add_resource(PostsByAuthorResource, '/posts')
 
 
+# class PostResource(Resource):
+#     @jwt_required()
+#     def post(self):
+#         args = parser.parse_args()
+#         current_user_id = get_jwt_identity()
+
+#         # Fetching the current
+#         current_user = User.query.filter_by(email=current_user_id).first()
+
+#         if 'content_image' in args and args['content_image'] is not None:
+#             content_image = request.files['content_image'].read()
+#         else:
+#             content_image = None
+
+#         # Creates  post with the current user as the author
+#         new_post = Post(
+#             content_text=args['content_text'],
+#             content_image=content_image,
+#             author=current_user  # Set the author of the post
+#         )
+
+#         db.session.add(new_post)
+#         db.session.commit()
+
+#         return {'message': 'Post created successfully', 'post': new_post.to_dict()}, 201
+
+
+# # Add the resource to the API
+# api.add_resource(PostResource, '/posts')
+
+
+# with recipient
+# class PostResource(Resource):
+#     @jwt_required()
+#     def post(self):
+#         args = parser.parse_args()
+#         current_user_id = get_jwt_identity()
+
+#         # Fetch the current user (author) based on the access token
+#         current_user = User.query.filter_by(email=current_user_id).first()
+
+#         # Check if 'recipient_id' is present in args
+#         recipient_id = args.get('recipient_id')
+#         if recipient_id is None:
+#             return {'message': 'Recipient ID is required'}, 400
+
+#         # Fetch the recipient user (friend) based on the recipient_id
+#         recipient_user = User.query.get(recipient_id)
+
+#         if not recipient_user:
+#             return {'message': 'Recipient not found'}, 404
+
+#         if 'content_image' in args and args['content_image'] is not None:
+#             content_image = request.files['content_image'].read()
+#         else:
+#             content_image = None
+
+#         # Create a post with both the current user as the author and the recipient user
+#         new_post = Post(
+#             content_text=args['content_text'],
+#             content_image=content_image,
+#             author=current_user,
+#             recipient=recipient_user  # Set the recipient of the post
+#         )
+
+#         db.session.add(new_post)
+#         db.session.commit()
+
+#         return {'message': 'Post created successfully', 'post': new_post.to_dict()}, 201
+
+# NEW PATH W/O FILE UPLOAD
 class PostResource(Resource):
     @jwt_required()
     def post(self):
         args = parser.parse_args()
         current_user_id = get_jwt_identity()
 
-        # Fetching the current
+        # Fetch the current user (author) based on the access token
         current_user = User.query.filter_by(email=current_user_id).first()
 
-        if 'content_image' in args and args['content_image'] is not None:
-            content_image = request.files['content_image'].read()
-        else:
-            content_image = None
+        # Check if 'recipient_id' is present in args
+        recipient_id = args.get('recipient_id')
+        if recipient_id is None:
+            return {'message': 'Recipient ID is required'}, 400
 
-        # Creates  post with the current user as the author
+        # Fetch the recipient user (friend) based on the recipient_id
+        recipient_user = User.query.get(recipient_id)
+
+        if not recipient_user:
+            return {'message': 'Recipient not found'}, 404
+
+        # Check if 'content_image' is present in args
+        content_image_url = args.get('content_image', None)
+
+        # Create a post with both the current user as the author and the recipient user
         new_post = Post(
             content_text=args['content_text'],
-            content_image=content_image,
-            author=current_user  # Set the author of the post
+            content_image=content_image_url,
+            author=current_user,
+            recipient=recipient_user  # Set the recipient of the post
         )
 
         db.session.add(new_post)
