@@ -298,6 +298,7 @@ api.add_resource(PostsByAuthorResource, '/posts')
 #         return {'message': 'Post created successfully', 'post': new_post.to_dict()}, 201
 
 # NEW PATH W/O FILE UPLOAD
+
 class PostResource(Resource):
     @jwt_required()
     def post(self):
@@ -334,10 +335,71 @@ class PostResource(Resource):
 
         return {'message': 'Post created successfully', 'post': new_post.to_dict()}, 201
 
+    # @jwt_required()
+    # def get(self):
+    #     args = parser.parse_args()
+
+    #     # Debugging: Print the recipient_id to the console
+
+    #     # Fetch the current user based on the access token
+    #     current_user_id = get_jwt_identity()
+    #     current_user = User.query.filter_by(email=current_user_id).first()
+
+    #     # Check if 'recipient_id' is present in args
+    #     recipient_id = args.get('recipient_id')
+
+    #     if recipient_id is None:
+    #         return {'message': 'Recipient ID is required'}, 400
+
+    #     # Fetch the recipient user based on the recipient_id
+    #     recipient_user = User.query.get(recipient_id)
+
+    #     if not recipient_user:
+    #         return {'message': 'Recipient not found'}, 404
+
+    #     # Fetch posts for the recipient
+    #     posts = Post.query.filter_by(recipient=recipient_user).all()
+
+    #     # Convert posts to a list of dictionaries
+    #     posts_data = [post.to_dict() for post in posts]
+
+    #     return {'posts': posts_data}, 200
+
 
 # Add the resource to the API
 api.add_resource(PostResource, '/posts')
 
+
+class GetPostsByRecipient(Resource):
+    @jwt_required()
+    def get(self, recipient_id):
+        # No need to parse arguments using parser.parse_args()
+
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(email=current_user_id).first()
+
+        # Check if 'recipient_id' is present in function arguments (not args)
+        if recipient_id is None:
+            return {'message': 'Recipient ID is required'}, 400
+
+        # Fetch the recipient user based on the recipient_id
+        recipient_user = User.query.get(recipient_id)
+
+        if not recipient_user:
+            return {'message': 'Recipient not found'}, 404
+
+        # Fetch posts for the recipient
+        posts = Post.query.filter_by(recipient=recipient_user).all()
+
+        # Convert posts to a list of dictionaries
+        posts_data = [post.to_dict() for post in posts]
+
+        # Use jsonify to format the response as JSON
+        return jsonify({'posts': posts_data})
+
+
+api.add_resource(GetPostsByRecipient,
+                 '/getpostsbyrecipient/<int:recipient_id>')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
