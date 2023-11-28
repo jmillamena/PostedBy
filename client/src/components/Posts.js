@@ -38,7 +38,7 @@ const Posts = ({ recipientId }) => {
               {post.content_image && (
                 <img src={post.content_image} alt="Post Image" />
               )}
-              <p>Posted by {post.author.username}</p>
+              <p>Postedby {post.author.username}</p>
             </div>
           </li>
         ))}
