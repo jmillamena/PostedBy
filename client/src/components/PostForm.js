@@ -1,52 +1,166 @@
+// import React from "react";
+// import { Formik, Field, Form, ErrorMessage } from "formik";
+// import * as Yup from "yup";
+// import {
+//   FormGroup,
+//   FormLabel,
+//   FormControl,
+//   Button,
+//   Alert,
+// } from "react-bootstrap";
+
+// const CreatePostSchema = Yup.object().shape({
+//   recipientId: Yup.string().required("Recipient is required"),
+//   postContent: Yup.string().required("Post content is required"),
+//   postImage: Yup.string().url("Invalid URL"),
+// });
+
+// const PostForm = ({ onSubmit, friends }) => {
+//   return (
+//     <Formik
+//       initialValues={{
+//         recipientId: "",
+//         postContent: "",
+//         postImage: "",
+//       }}
+//       validationSchema={CreatePostSchema}
+//       onSubmit={onSubmit}
+//     >
+//       {({ isSubmitting, resetForm }) => (
+//         <Form>
+//           <FormGroup>
+//             <FormLabel>Recipient:</FormLabel>
+//             <Field
+//               as="select"
+//               id="recipientId"
+//               name="recipientId"
+//               className="custom-form-control"
+//             >
+//               <option value="" disabled>
+//                 Select a friend
+//               </option>
+//               {friends.map((friend) => (
+//                 <option key={friend.id} value={friend.id}>
+//                   {friend.username}
+//                 </option>
+//               ))}
+//             </Field>
+//             <ErrorMessage name="recipientId" component="div" />
+//           </FormGroup>
+//           <FormGroup>
+//             <FormLabel>Post Content:</FormLabel>
+//             <Field
+//               as={FormControl}
+//               type="text"
+//               id="postContent"
+//               name="postContent"
+//               className="custom-form-control"
+//             />
+//             <ErrorMessage name="postContent" component="div" />
+//           </FormGroup>
+//           <FormGroup>
+//             <FormLabel>Post Image URL:</FormLabel>
+//             <Field
+//               as={FormControl}
+//               type="text"
+//               id="postImage"
+//               name="postImage"
+//               className="custom-form-control"
+//             />
+//             <ErrorMessage name="postImage" component="div" />
+//           </FormGroup>
+//           <Button
+//             type="submit"
+//             disabled={isSubmitting}
+//             className="custom-submit-button"
+//           >
+//             Create Post
+//           </Button>
+//         </Form>
+//       )}
+//     </Formik>
+//   );
+// };
+
+// export default PostForm;
+
+//edit to autorecipient
+
+// PostForm.js
+// PostForm.js
 // PostForm.js
 import React from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { FormGroup, FormLabel, FormControl, Button } from "react-bootstrap";
 
-const PostFormSchema = Yup.object().shape({
-  content_text: Yup.string(),
-  contentImage: Yup.mixed().nullable(),
+const CreatePostSchema = Yup.object().shape({
+  recipientId: Yup.string().required("Recipient is required"),
+  postContent: Yup.string().required("Post content is required"),
+  postImage: Yup.string().url("Invalid URL"),
 });
 
-const PostForm = ({ onSubmit, authorId }) => {
-  console.log("Author ID in PostForm:", authorId);
-
-  if (authorId === undefined || authorId === null) {
-    return <div>Error: Author ID is missing.</div>;
-  }
+const PostForm = ({ onSubmit, friends, initialRecipientId }) => {
   return (
     <Formik
       initialValues={{
-        content_text: "",
-        content_image: null,
-        author_id: authorId,
+        recipientId: initialRecipientId || "",
+        postContent: "",
+        postImage: "",
       }}
-      validationSchema={PostFormSchema}
+      validationSchema={CreatePostSchema}
       onSubmit={onSubmit}
     >
-      {({ isSubmitting, setFieldValue, handleBlur }) => (
-        <Form encType="multipart/form-data">
-          <div>
-            <label htmlFor="content_text">Content:</label>
-            <Field as="textarea" id="content_text" name="content_text" />
-            <ErrorMessage name="content_text" component="div" />
-          </div>
-          <div>
-            <label htmlFor="content_image">Image:</label>
+      {({ isSubmitting, resetForm }) => (
+        <Form>
+          <FormGroup>
+            <FormLabel>Recipient:</FormLabel>
             <Field
-              type="file"
-              id="content_image"
-              name="content_image"
-              onChange={(event) => {
-                setFieldValue("content_image", event.currentTarget.files[0]);
-              }}
-              onBlur={handleBlur}
+              as="select"
+              id="recipientId"
+              name="recipientId"
+              className="custom-form-control"
+            >
+              <option value="" disabled>
+                Select a friend
+              </option>
+              {friends.map((friend) => (
+                <option key={friend.id} value={friend.id}>
+                  {friend.username}
+                </option>
+              ))}
+            </Field>
+            <ErrorMessage name="recipientId" component="div" />
+          </FormGroup>
+          <FormGroup>
+            <FormLabel>Post Content:</FormLabel>
+            <Field
+              as={FormControl}
+              type="text"
+              id="postContent"
+              name="postContent"
+              className="custom-form-control"
             />
-            <ErrorMessage name="content_image" component="div" />
-          </div>
-          <button type="submit" disabled={isSubmitting}>
-            Submit Post
-          </button>
+            <ErrorMessage name="postContent" component="div" />
+          </FormGroup>
+          <FormGroup>
+            <FormLabel>Post Image URL:</FormLabel>
+            <Field
+              as={FormControl}
+              type="text"
+              id="postImage"
+              name="postImage"
+              className="custom-form-control"
+            />
+            <ErrorMessage name="postImage" component="div" />
+          </FormGroup>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="custom-submit-button"
+          >
+            Create Post
+          </Button>
         </Form>
       )}
     </Formik>
