@@ -18,7 +18,14 @@ const Posts = ({ recipientId }) => {
         );
         console.log("Recipient ID:", recipientId);
         console.log("Posts Data:", response.data.posts);
-        setPosts(response.data.posts);
+        const postsCopy = [...response.data.posts];
+
+        // Sort the copy by date in descending order
+        const sortedPosts = postsCopy.sort((a, b) => {
+          return new Date(b.timestamp) - new Date(a.timestamp);
+        });
+
+        setPosts(sortedPosts);
       } catch (error) {
         console.error("Error fetching posts", error);
       }
