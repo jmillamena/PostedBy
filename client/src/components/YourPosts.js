@@ -62,15 +62,16 @@
 
 // export default YourPosts;
 
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import { Container, Row, Col, Card } from "react-bootstrap";
-import { useAuth } from "./App";
-import DeletePost from "./DeletePost";
+// import React, { useEffect, useState } from "react";
+// import { Link } from "react-router-dom";
+// import axios from "axios";
+// import { Container, Row, Col, Card } from "react-bootstrap";
+// import { useAuth } from "./App";
+// import DeletePost from "./DeletePost";
+// import EditPost from "./EditPost";
 
 // const YourPosts = () => {
-//   const { userId, user } = useAuth();
+//   const { userId } = useAuth();
 //   const [userPosts, setUserPosts] = useState([]);
 
 //   useEffect(() => {
@@ -92,6 +93,20 @@ import DeletePost from "./DeletePost";
 
 //     fetchUserPosts();
 //   }, [userId]);
+
+//   const handleEdit = (postId, newContentText) => {
+//     // Update the state to reflect the edited post
+//     setUserPosts((prevPosts) =>
+//       prevPosts.map((post) =>
+//         post.id === postId ? { ...post, content_text: newContentText } : post
+//       )
+//     );
+//   };
+
+//   const handleDelete = (postId) => {
+//     // Update the state to remove the deleted post
+//     setUserPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+//   };
 
 //   // Sort posts by timestamp (newest to oldest)
 //   const sortedPosts = userPosts.sort(
@@ -125,6 +140,12 @@ import DeletePost from "./DeletePost";
 //                     "Unknown user"
 //                   )}
 //                 </Card.Text>
+//                 <EditPost postId={post.id} onUpdate={handleEdit} />
+//                 <DeletePost
+//                   postId={post.id}
+//                   onDelete={handleDelete}
+//                   userId={userId}
+//                 />
 //               </Card.Body>
 //             </Card>
 //           </Col>
@@ -136,9 +157,18 @@ import DeletePost from "./DeletePost";
 
 // export default YourPosts;
 
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { Container, Row, Col, Card } from "react-bootstrap";
+import { useAuth } from "./App";
+import DeletePost from "./DeletePost";
+import EditPost from "./EditPost";
+
 const YourPosts = () => {
   const { userId } = useAuth();
   const [userPosts, setUserPosts] = useState([]);
+  const [editFormsVisible, setEditFormsVisible] = useState({});
 
   useEffect(() => {
     const fetchUserPosts = async () => {
@@ -152,6 +182,13 @@ const YourPosts = () => {
           }
         );
         setUserPosts(response.data.posts);
+        // Initialize edit form visibility state for each post
+        setEditFormsVisible(
+          response.data.posts.reduce(
+            (acc, post) => ({ ...acc, [post.id]: false }),
+            {}
+          )
+        );
       } catch (error) {
         console.error("Error fetching user posts", error);
       }
@@ -160,9 +197,32 @@ const YourPosts = () => {
     fetchUserPosts();
   }, [userId]);
 
+  const handleEdit = (postId, newContentText, newContentImage) => {
+    // Update the state to reflect the edited post
+    setUserPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
+              content_text: newContentText,
+              content_image: newContentImage,
+            }
+          : post
+      )
+    );
+  };
+
   const handleDelete = (postId) => {
     // Update the state to remove the deleted post
     setUserPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+  };
+
+  const toggleEditForm = (postId) => {
+    // Toggle the visibility of the edit form for the specified post
+    setEditFormsVisible((prevVisibility) => ({
+      ...prevVisibility,
+      [postId]: !prevVisibility[postId],
+    }));
   };
 
   // Sort posts by timestamp (newest to oldest)
@@ -197,6 +257,12 @@ const YourPosts = () => {
                     "Unknown user"
                   )}
                 </Card.Text>
+                <button onClick={() => toggleEditForm(post.id)}>
+                  {editFormsVisible[post.id] ? "Close Edit Form" : "Edit Post"}
+                </button>
+                {editFormsVisible[post.id] && (
+                  <EditPost postId={post.id} onUpdate={handleEdit} />
+                )}
                 <DeletePost
                   postId={post.id}
                   onDelete={handleDelete}
