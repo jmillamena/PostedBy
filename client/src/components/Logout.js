@@ -56,7 +56,6 @@ const Logout = () => {
   const { setIsLoggedIn, setUserName, setUserId } = useAuth();
 
   useEffect(() => {
-    // Function to perform backend logout
     const backendLogout = async () => {
       try {
         const accessToken = localStorage.getItem("access_token");
