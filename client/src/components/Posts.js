@@ -49,7 +49,7 @@ const Posts = ({ recipientId }) => {
                   {post.content_text}
                 </Card.Text>
                 <Card.Text style={{ margin: "0", padding: "0" }}>
-                  Posted by {post.author.username}
+                  PostedBy {post.author.username}
                 </Card.Text>
               </Card.Body>
             </Card>
