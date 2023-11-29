@@ -68,20 +68,7 @@ class TokenRefreshResource(Resource):
 
 api.add_resource(TokenRefreshResource, "/token/refresh")
 
-# class TokenRefreshResource(Resource):
-#     @jwt_required(refresh=True)
-#     def post(self):
-#         current_user = get_jwt_identity()
-#         access_token = create_access_token(identity=current_user)
-
-#         # Check if the refresh token is blacklisted
-#         refresh_token = request.json.get('refresh_token', None)
-#         if refresh_token:
-#             jti_refresh = get_jti(refresh_token)
-#             if jti_refresh in blacklist:
-#                 return {"message": "Refresh token is blacklisted"}, 401
-
-#         return {"access_token": access_token}, 200
+#
 
 
 class LoginResource(Resource):
@@ -227,78 +214,6 @@ class PostsByAuthorResource(Resource):
 api.add_resource(PostsByAuthorResource, '/posts')
 
 
-# class PostResource(Resource):
-#     @jwt_required()
-#     def post(self):
-#         args = parser.parse_args()
-#         current_user_id = get_jwt_identity()
-
-#         # Fetching the current
-#         current_user = User.query.filter_by(email=current_user_id).first()
-
-#         if 'content_image' in args and args['content_image'] is not None:
-#             content_image = request.files['content_image'].read()
-#         else:
-#             content_image = None
-
-#         # Creates  post with the current user as the author
-#         new_post = Post(
-#             content_text=args['content_text'],
-#             content_image=content_image,
-#             author=current_user  # Set the author of the post
-#         )
-
-#         db.session.add(new_post)
-#         db.session.commit()
-
-#         return {'message': 'Post created successfully', 'post': new_post.to_dict()}, 201
-
-
-# # Add the resource to the API
-# api.add_resource(PostResource, '/posts')
-
-
-# with recipient
-# class PostResource(Resource):
-#     @jwt_required()
-#     def post(self):
-#         args = parser.parse_args()
-#         current_user_id = get_jwt_identity()
-
-#         # Fetch the current user (author) based on the access token
-#         current_user = User.query.filter_by(email=current_user_id).first()
-
-#         # Check if 'recipient_id' is present in args
-#         recipient_id = args.get('recipient_id')
-#         if recipient_id is None:
-#             return {'message': 'Recipient ID is required'}, 400
-
-#         # Fetch the recipient user (friend) based on the recipient_id
-#         recipient_user = User.query.get(recipient_id)
-
-#         if not recipient_user:
-#             return {'message': 'Recipient not found'}, 404
-
-#         if 'content_image' in args and args['content_image'] is not None:
-#             content_image = request.files['content_image'].read()
-#         else:
-#             content_image = None
-
-#         # Create a post with both the current user as the author and the recipient user
-#         new_post = Post(
-#             content_text=args['content_text'],
-#             content_image=content_image,
-#             author=current_user,
-#             recipient=recipient_user  # Set the recipient of the post
-#         )
-
-#         db.session.add(new_post)
-#         db.session.commit()
-
-#         return {'message': 'Post created successfully', 'post': new_post.to_dict()}, 201
-
-# NEW PATH W/O FILE UPLOAD
-
 class PostResource(Resource):
     @jwt_required()
     def post(self):
@@ -335,71 +250,81 @@ class PostResource(Resource):
 
         return {'message': 'Post created successfully', 'post': new_post.to_dict()}, 201
 
-    # @jwt_required()
-    # def get(self):
-    #     args = parser.parse_args()
 
-    #     # Debugging: Print the recipient_id to the console
-
-    #     # Fetch the current user based on the access token
-    #     current_user_id = get_jwt_identity()
-    #     current_user = User.query.filter_by(email=current_user_id).first()
-
-    #     # Check if 'recipient_id' is present in args
-    #     recipient_id = args.get('recipient_id')
-
-    #     if recipient_id is None:
-    #         return {'message': 'Recipient ID is required'}, 400
-
-    #     # Fetch the recipient user based on the recipient_id
-    #     recipient_user = User.query.get(recipient_id)
-
-    #     if not recipient_user:
-    #         return {'message': 'Recipient not found'}, 404
-
-    #     # Fetch posts for the recipient
-    #     posts = Post.query.filter_by(recipient=recipient_user).all()
-
-    #     # Convert posts to a list of dictionaries
-    #     posts_data = [post.to_dict() for post in posts]
-
-    #     return {'posts': posts_data}, 200
-
-
-# Add the resource to the API
 api.add_resource(PostResource, '/posts')
 
 
 class GetPostsByRecipient(Resource):
     @jwt_required()
     def get(self, recipient_id):
-        # No need to parse arguments using parser.parse_args()
 
         current_user_id = get_jwt_identity()
         current_user = User.query.filter_by(email=current_user_id).first()
 
-        # Check if 'recipient_id' is present in function arguments (not args)
         if recipient_id is None:
             return {'message': 'Recipient ID is required'}, 400
 
-        # Fetch the recipient user based on the recipient_id
+        # Fetch the recipient_id
         recipient_user = User.query.get(recipient_id)
 
         if not recipient_user:
             return {'message': 'Recipient not found'}, 404
 
-        # Fetch posts for the recipient
         posts = Post.query.filter_by(recipient=recipient_user).all()
 
-        # Convert posts to a list of dictionaries
         posts_data = [post.to_dict() for post in posts]
 
-        # Use jsonify to format the response as JSON
         return jsonify({'posts': posts_data})
 
 
 api.add_resource(GetPostsByRecipient,
                  '/getpostsbyrecipient/<int:recipient_id>')
+
+
+class GetPostsByUserId(Resource):
+    @jwt_required()
+    def get(self, user_id):
+        # Get the currently logged-in user's identity
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(email=current_user_id).first()
+
+        # Ensure the user_id is not provided or matches the logged-in user's ID
+        if user_id is not None and user_id != current_user.id:
+            return {'message': 'Unauthorized access to posts'}, 403
+
+        # Fetch posts based on the logged-in user's ID (recipient ID)
+        posts = Post.query.filter_by(recipient=current_user).all()
+
+        posts_data = [post.to_dict() for post in posts]
+
+        return jsonify({'posts': posts_data})
+
+
+# Register the new route
+api.add_resource(GetPostsByUserId, '/getpostsbyuserid/<int:user_id>')
+
+
+class GetPostsByAuthorId(Resource):
+    @jwt_required()
+    def get(self, author_id):
+        # Get the currently logged-in user's identity
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(email=current_user_id).first()
+
+        # Ensure the author_id matches the logged-in user's ID
+        if author_id is not None and author_id != current_user.id:
+            return {'message': 'Unauthorized access to posts'}, 403
+
+        # Fetch posts based on the logged-in user's ID (author ID)
+        posts = Post.query.filter_by(author=current_user).all()
+
+        posts_data = [post.to_dict() for post in posts]
+
+        return jsonify({'posts': posts_data})
+
+
+# Register the new route
+api.add_resource(GetPostsByAuthorId, '/getpostsbyauthorid/<int:author_id>')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
