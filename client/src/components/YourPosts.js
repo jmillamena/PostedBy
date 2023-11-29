@@ -71,6 +71,10 @@ const YourPosts = () => {
     (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
   );
 
+  const getPostImage = (post) => {
+    return post.content_image || "/PostedBy.png";
+  };
+
   return (
     <Container>
       <h2>PostedBy You</h2>
@@ -80,7 +84,7 @@ const YourPosts = () => {
             <Card>
               <Card.Img
                 variant="top"
-                src={post.content_image}
+                src={getPostImage(post)}
                 alt="Post Image"
                 style={{ objectFit: "cover", height: "200px" }}
               />
