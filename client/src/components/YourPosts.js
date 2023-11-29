@@ -27,6 +27,10 @@ const YourPosts = () => {
     fetchUserPosts();
   }, [userId]);
 
+  const sortedPosts = userPosts.sort(
+    (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+  );
+
   return (
     <Container>
       <h2>Your Posts</h2>
@@ -45,7 +49,7 @@ const YourPosts = () => {
                   {post.content_text}
                 </Card.Text>
                 <Card.Text style={{ margin: "0", padding: "0" }}>
-                  Posted by {post.author.username}
+                  Posted by you
                 </Card.Text>
               </Card.Body>
             </Card>
