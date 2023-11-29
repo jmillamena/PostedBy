@@ -223,7 +223,7 @@ class PostResource(Resource):
         # Fetch the current user (author) based on the access token
         current_user = User.query.filter_by(email=current_user_id).first()
 
-        # Check if 'recipient_id' is present in args
+        # 'recipient_id' is present in args
         recipient_id = args.get('recipient_id')
         if recipient_id is None:
             return {'message': 'Recipient ID is required'}, 400
@@ -234,7 +234,7 @@ class PostResource(Resource):
         if not recipient_user:
             return {'message': 'Recipient not found'}, 404
 
-        # Check if 'content_image' is present in args
+        #  'content_image'  in args
         content_image_url = args.get('content_image', None)
 
         # Create a post with both the current user as the author and the recipient user
@@ -353,6 +353,38 @@ class DeletePost(Resource):
 api.add_resource(DeletePost, '/deletepost/<int:post_id>')
 
 
+# class EditPost(Resource):
+#     @jwt_required()
+#     def patch(self, post_id):
+#         # Get the currently logged-in user's identity
+#         current_user_id = get_jwt_identity()
+#         current_user = User.query.filter_by(email=current_user_id).first()
+
+#         # Get the post by ID
+#         post = Post.query.get(post_id)
+
+#         # Check if the post exists and if the author matches the logged-in user
+#         if not post or post.author != current_user:
+#             return {'message': 'Unauthorized access to edit post'}, 403
+
+#         # Extract data from the request
+#         data = request.get_json()
+
+#         # Update the post fields with the new data
+#         if 'content_text' in data:
+#             post.content_text = data['content_text']
+#         # Add more fields as needed
+
+#         # Commit the changes to the database
+#         db.session.commit()
+
+#         return {'message': 'Post edited successfully'}
+
+
+# # Register the new route
+# api.add_resource(EditPost, '/editpost/<int:post_id>')
+
+# with content_image
 class EditPost(Resource):
     @jwt_required()
     def patch(self, post_id):
@@ -373,7 +405,8 @@ class EditPost(Resource):
         # Update the post fields with the new data
         if 'content_text' in data:
             post.content_text = data['content_text']
-        # Add more fields as needed
+        if 'content_image' in data:
+            post.content_image = data['content_image']
 
         # Commit the changes to the database
         db.session.commit()
