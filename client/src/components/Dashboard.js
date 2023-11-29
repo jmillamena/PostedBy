@@ -113,7 +113,7 @@ const Dashboard = () => {
   return (
     <div>
       <h2>Welcome to PostedBy, {userName}!</h2>
-      <h3>Your Posts:</h3>
+      <h3>PostedBy your friends</h3>
       {/* Render user posts */}
       <PostForLoggedIn posts={userPosts} userId={userId} />
       {/* Add other dashboard content here */}
