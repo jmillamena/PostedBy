@@ -47,6 +47,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Container, Row, Col, Card } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const PostForLoggedIn = ({ userId }) => {
   const [posts, setPosts] = useState([]);
@@ -96,7 +97,10 @@ const PostForLoggedIn = ({ userId }) => {
                   {post.content_text}
                 </Card.Text>
                 <Card.Text style={{ margin: "0", padding: "0" }}>
-                  PostedBy {post.author.username}
+                  PostedBy{" "}
+                  <Link to={`/profile/${post.author.id}`}>
+                    {post.author.username}
+                  </Link>
                 </Card.Text>
               </Card.Body>
             </Card>

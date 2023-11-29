@@ -63,6 +63,7 @@
 // export default YourPosts;
 
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { useAuth } from "./App";
@@ -115,9 +116,13 @@ const YourPosts = () => {
                 </Card.Text>
                 <Card.Text style={{ margin: "0", padding: "0" }}>
                   PostedOn{" "}
-                  {post.recipient
-                    ? `${post.recipient.username}'s profile`
-                    : "Unknown user"}
+                  {post.recipient ? (
+                    <Link to={`/profile/${post.recipient.id}`}>
+                      {post.recipient.username}
+                    </Link>
+                  ) : (
+                    "Unknown user"
+                  )}
                 </Card.Text>
               </Card.Body>
             </Card>

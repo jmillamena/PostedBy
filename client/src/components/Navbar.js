@@ -84,7 +84,7 @@ const Navbar = () => {
               <Link to="/create-post">Create Post</Link>
             </li>
             <li>
-              <Link to="/your-posts">Your Posts</Link>
+              <Link to="/your-posts">PostedOn</Link>
             </li>
             <li>
               <Link to="/logout">Logout</Link>
