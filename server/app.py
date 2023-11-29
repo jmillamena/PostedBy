@@ -303,6 +303,8 @@ class GetPostsByUserId(Resource):
 # Register the new route
 api.add_resource(GetPostsByUserId, '/getpostsbyuserid/<int:user_id>')
 
+# path for users to edit posts they created
+
 
 class GetPostsByAuthorId(Resource):
     @jwt_required()
@@ -325,6 +327,62 @@ class GetPostsByAuthorId(Resource):
 
 # Register the new route
 api.add_resource(GetPostsByAuthorId, '/getpostsbyauthorid/<int:author_id>')
+
+
+class DeletePost(Resource):
+    @jwt_required()
+    def delete(self, post_id):
+        # Get the currently logged-in user's identity
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(email=current_user_id).first()
+
+        # Get the post by ID
+        post = Post.query.get(post_id)
+
+        # Check if the post exists and if the author matches the logged-in user
+        if not post or post.author != current_user:
+            return {'message': 'Unauthorized access to delete post'}, 403
+
+        # Delete the post
+        db.session.delete(post)
+        db.session.commit()
+
+        return {'message': 'Post deleted successfully'}
+
+
+api.add_resource(DeletePost, '/deletepost/<int:post_id>')
+
+
+class EditPost(Resource):
+    @jwt_required()
+    def patch(self, post_id):
+        # Get the currently logged-in user's identity
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(email=current_user_id).first()
+
+        # Get the post by ID
+        post = Post.query.get(post_id)
+
+        # Check if the post exists and if the author matches the logged-in user
+        if not post or post.author != current_user:
+            return {'message': 'Unauthorized access to edit post'}, 403
+
+        # Extract data from the request
+        data = request.get_json()
+
+        # Update the post fields with the new data
+        if 'content_text' in data:
+            post.content_text = data['content_text']
+        # Add more fields as needed
+
+        # Commit the changes to the database
+        db.session.commit()
+
+        return {'message': 'Post edited successfully'}
+
+
+# Register the new route
+api.add_resource(EditPost, '/editpost/<int:post_id>')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
