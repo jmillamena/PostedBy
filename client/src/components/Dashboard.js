@@ -93,7 +93,7 @@ const Dashboard = () => {
             },
           }
         );
-        console.log(response.data); // Log the response data
+        console.log(response.data);
         setUserPosts(response.data.posts);
       } catch (error) {
         console.error("Error fetching user posts", error);

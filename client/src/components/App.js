@@ -107,6 +107,7 @@ import FriendsContainer from "./FriendsContainer";
 import UserProfile from "./UserProfile";
 import Home from "./Home";
 import CreatePost from "./CreatePost";
+import YourPosts from "./YourPosts";
 
 // Create a context for authentication
 const AuthContext = createContext();
@@ -171,6 +172,7 @@ const App = () => {
           <PrivateRoute path="/friends" component={FriendsContainer} />
           <PrivateRoute path="/profile/:friendId" component={UserProfile} />
           <PrivateRoute path="/create-post" component={CreatePost} />
+          <PrivateRoute path="/your-posts" component={YourPosts} />
           <PrivateRoute path="/logout" component={Logout} />
         </Switch>
       </AuthProvider>

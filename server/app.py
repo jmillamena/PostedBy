@@ -304,5 +304,27 @@ class GetPostsByUserId(Resource):
 api.add_resource(GetPostsByUserId, '/getpostsbyuserid/<int:user_id>')
 
 
+class GetPostsByAuthorId(Resource):
+    @jwt_required()
+    def get(self, author_id):
+        # Get the currently logged-in user's identity
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(email=current_user_id).first()
+
+        # Ensure the author_id matches the logged-in user's ID
+        if author_id is not None and author_id != current_user.id:
+            return {'message': 'Unauthorized access to posts'}, 403
+
+        # Fetch posts based on the logged-in user's ID (author ID)
+        posts = Post.query.filter_by(author=current_user).all()
+
+        posts_data = [post.to_dict() for post in posts]
+
+        return jsonify({'posts': posts_data})
+
+
+# Register the new route
+api.add_resource(GetPostsByAuthorId, '/getpostsbyauthorid/<int:author_id>')
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

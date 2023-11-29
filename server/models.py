@@ -97,8 +97,8 @@ class Post(db.Model):
             'timestamp': self.timestamp.isoformat(),
             'author_id': self.author_id,
             'recipient_id': self.recipient_id,
-            'author': self.author.to_dict(),
-            'recipient': self.recipient.to_dict()
+            'author': self.author.to_dict() if self.author else None,
+            'recipient': self.recipient.to_dict() if self.recipient else None
         }
 
     def __repr__(self):
