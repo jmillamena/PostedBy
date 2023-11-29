@@ -223,7 +223,7 @@ class PostResource(Resource):
         # Fetch the current user (author) based on the access token
         current_user = User.query.filter_by(email=current_user_id).first()
 
-        # Check if 'recipient_id' is present in args
+        # 'recipient_id' is present in args
         recipient_id = args.get('recipient_id')
         if recipient_id is None:
             return {'message': 'Recipient ID is required'}, 400
@@ -234,7 +234,7 @@ class PostResource(Resource):
         if not recipient_user:
             return {'message': 'Recipient not found'}, 404
 
-        # Check if 'content_image' is present in args
+        #  'content_image'  in args
         content_image_url = args.get('content_image', None)
 
         # Create a post with both the current user as the author and the recipient user
