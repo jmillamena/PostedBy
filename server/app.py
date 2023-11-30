@@ -454,5 +454,32 @@ class PostComment(Resource):
 # Register the new route
 api.add_resource(PostComment, '/postcomment/<int:post_id>')
 
+
+class GetComments(Resource):
+    @jwt_required()
+    def get(self, post_id):
+        # Get the currently logged-in user's identity
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(email=current_user_id).first()
+
+        # Get the post by ID
+        post = Post.query.get(post_id)
+
+        # Check if the post exists
+        if not post:
+            return {'message': 'Post not found'}, 404
+
+        # Get comments for the post
+        comments = Comment.query.filter_by(post_id=post.id).all()
+
+        # Convert comments to a list of dictionaries
+        comments_data = [comment.to_dict() for comment in comments]
+
+        return {'comments': comments_data}
+
+
+# Register the new route
+api.add_resource(GetComments, '/getcomments/<int:post_id>')
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
