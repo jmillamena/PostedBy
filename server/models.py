@@ -103,3 +103,30 @@ class Post(db.Model):
 
     def __repr__(self):
         return f'<Post {self.content_text}, {self.content_image}, {self.timestamp}, {self.author}>'
+
+
+class Comment(db.Model):
+    __tablename__ = 'user_comments'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    content = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    post_id = db.Column(db.Integer, db.ForeignKey("posts.id"))
+
+    user = db.relationship("User", backref="user_comments")
+    post = db.relationship("Post", backref="comments")
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'content': self.content,
+            'timestamp': self.timestamp.isoformat(),
+            'user_id': self.user_id,
+            'post_id': self.post_id,
+            'user': self.user.to_dict() if self.user else None,
+            'post': self.post.to_dict() if self.post else None
+        }
+
+    def __repr__(self):
+        return f'<Comment {self.content}, {self.timestamp}, {self.user}>'
