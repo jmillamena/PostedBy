@@ -2,14 +2,21 @@
 
 import React from "react";
 import { Card } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import "./styling.css";
 
 const Comment = ({ content, user }) => {
   return (
-    <Card>
+    <Card className="comments">
       <Card.Body>
         <Card.Text>{content}</Card.Text>
         <Card.Text>
-          Comment by {user ? user.username : "Unknown User"}
+          Comment by{" "}
+          {user ? (
+            <Link to={`/profile/${user.id}`}>{user.username}</Link>
+          ) : (
+            "Unknown User"
+          )}
         </Card.Text>
       </Card.Body>
     </Card>

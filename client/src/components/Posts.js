@@ -411,10 +411,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import PostComment from "./PostComment";
-import Comment from "./Comment"; // Import the new Comment component
+import Comment from "./Comment";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import PostedBy from "./PostedBy.png";
+import "./styling.css";
 
 const placeholderImageUrl = PostedBy;
 
@@ -511,7 +512,8 @@ const Posts = ({ recipientId, isAuthenticated }) => {
                   style={{ objectFit: "cover", height: "200px" }}
                 />
               )}
-              <Card.Body style={{ maxHeight: "300px", overflowY: "auto" }}>
+              {/* adjusts size of post text area */}
+              <Card.Body style={{ maxHeight: "400px", overflowY: "auto" }}>
                 <Card.Text style={{ margin: "0", padding: "0" }}>
                   {post.content_text}
                 </Card.Text>
@@ -529,22 +531,17 @@ const Posts = ({ recipientId, isAuthenticated }) => {
                 <p>Comments:</p>
 
                 {/* Display comments using the Comment component */}
-                <div style={{ maxHeight: "100px", overflowY: "auto" }}>
+                <div
+                  className="scrollComment"
+                  style={{ maxHeight: "100px", overflowY: "auto" }}
+                >
                   {comments[post.id] &&
                     comments[post.id].map((comment) => (
-                      <div key={comment.id}>
-                        <p>{comment.content}</p>
-                        <p>
-                          Comment by{" "}
-                          {comment.user ? (
-                            <Link to={`/profile/${comment.user.id}`}>
-                              {comment.user.username}
-                            </Link>
-                          ) : (
-                            "Unknown User"
-                          )}
-                        </p>
-                      </div>
+                      <Comment
+                        key={comment.id}
+                        content={comment.content}
+                        user={comment.user}
+                      />
                     ))}
                 </div>
                 <br />
