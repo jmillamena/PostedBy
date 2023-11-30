@@ -8,8 +8,9 @@ from flask_restful import Resource, reqparse
 
 # Local imports
 from config import app, db, api, bcrypt
+from datetime import datetime
 # Add your model imports
-from models import User, Post
+from models import User, Post, Comment
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, get_jti, create_refresh_token
 from werkzeug.datastructures import FileStorage
 # Views go here!
@@ -416,6 +417,42 @@ class EditPost(Resource):
 
 # Register the new route
 api.add_resource(EditPost, '/editpost/<int:post_id>')
+
+
+class PostComment(Resource):
+    @jwt_required()
+    def post(self, post_id):
+        # Get the currently logged-in user's identity
+        current_user_id = get_jwt_identity()
+        current_user = User.query.filter_by(email=current_user_id).first()
+
+        # Get the post by ID
+        post = Post.query.get(post_id)
+
+        # Check if the post exists
+        if not post:
+            return {'message': 'Post not found'}, 404
+
+        # Extract data from the request
+        data = request.get_json()
+
+        # Create a new comment
+        new_comment = Comment(
+            content=data.get('content'),
+            timestamp=datetime.utcnow(),
+            user=current_user,
+            post=post
+        )
+
+        # Add the new comment to the database
+        db.session.add(new_comment)
+        db.session.commit()
+
+        return {'message': 'Comment added successfully'}
+
+
+# Register the new route
+api.add_resource(PostComment, '/postcomment/<int:post_id>')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
