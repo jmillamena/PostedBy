@@ -14,3 +14,7 @@ beige: #f5f5dc
   color: #f4a460 !important;
   text-align: center;
 }
+
+.sideheading {
+  color: #f4a460;
+}

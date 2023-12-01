@@ -17,3 +17,7 @@ beige: #f5f5dc
 .comments {
   background-color: #ffefd5;
 }
+
+.mr-auto {
+  font-weight: bold;
+}
