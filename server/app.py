@@ -7,17 +7,21 @@ from flask import request, jsonify
 from flask_restful import Resource, reqparse
 
 # Local imports
+
 from config import app, db, api, bcrypt
 from datetime import datetime
 # Add your model imports
 from models import User, Post, Comment
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, get_jti, create_refresh_token
 from werkzeug.datastructures import FileStorage
+from jwt.exceptions import ExpiredSignatureError, DecodeError
+from flask_cors import cross_origin  # remove
 # Views go here!
 
 jwt = JWTManager(app)
 
 blacklist = set()
+
 
 parser = reqparse.RequestParser()
 parser.add_argument('content_text', type=str, help='Text content of the post')
@@ -95,32 +99,10 @@ class LoginResource(Resource):
 api.add_resource(LoginResource, "/login")
 
 
-# class LogoutResource(Resource):
-#     @jwt_required()
-#     def post(self):
-#         # Extracting the access token from the Authorization header
-#         auth_header = request.headers.get("Authorization")
-#         if not auth_header or "Bearer " not in auth_header:
-#             return {"message": "Missing or invalid token"}, 400
-
-#         access_token = auth_header.split(" ")[1]
-
-#         # Blacklist the access token
-#         jti_access = get_jti(access_token)
-#         blacklist.add(jti_access)
-
-#         # If the refresh token is provided in the request's JSON, blacklist it as well
-#         refresh_token = request.json.get('refresh_token', None)
-#         if refresh_token:
-#             jti_refresh = get_jti(refresh_token)
-#             blacklist.add(jti_refresh)
-
-#         return {"message": "Successfully logged out."}, 200
-
 class LogoutResource(Resource):
     @jwt_required()
     def post(self):
-
+        # Extracting the access token from the Authorization header
         auth_header = request.headers.get("Authorization")
         if not auth_header or "Bearer " not in auth_header:
             return {"message": "Missing or invalid token"}, 400
@@ -353,37 +335,6 @@ class DeletePost(Resource):
 
 api.add_resource(DeletePost, '/deletepost/<int:post_id>')
 
-
-# class EditPost(Resource):
-#     @jwt_required()
-#     def patch(self, post_id):
-#         # Get the currently logged-in user's identity
-#         current_user_id = get_jwt_identity()
-#         current_user = User.query.filter_by(email=current_user_id).first()
-
-#         # Get the post by ID
-#         post = Post.query.get(post_id)
-
-#         # Check if the post exists and if the author matches the logged-in user
-#         if not post or post.author != current_user:
-#             return {'message': 'Unauthorized access to edit post'}, 403
-
-#         # Extract data from the request
-#         data = request.get_json()
-
-#         # Update the post fields with the new data
-#         if 'content_text' in data:
-#             post.content_text = data['content_text']
-#         # Add more fields as needed
-
-#         # Commit the changes to the database
-#         db.session.commit()
-
-#         return {'message': 'Post edited successfully'}
-
-
-# # Register the new route
-# api.add_resource(EditPost, '/editpost/<int:post_id>')
 
 # with content_image
 class EditPost(Resource):

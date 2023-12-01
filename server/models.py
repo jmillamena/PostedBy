@@ -9,10 +9,21 @@ from config import db, bcrypt
 
 # Models go here!
 
-friendship_table = db.Table('friendships',
-                            db.Column('user_id', db.Integer, db.ForeignKey(
-                                'user.id'), primary_key=True),
-                            db.Column('friend_id', db.Integer, db.ForeignKey('user.id'), primary_key=True))
+# friendship_table = db.Table('friendships',
+#                             db.Column('user_id', db.Integer, db.ForeignKey(
+#                                 'user.id'), primary_key=True),
+#                             db.Column('friend_id', db.Integer, db.ForeignKey('user.id'), primary_key=True))
+
+
+class Friendship(db.Model):
+    __tablename__ = 'friendship-relationship'
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    friend_id = db.Column(db.Integer, db.ForeignKey(
+        'user.id'), primary_key=True)
+
+    def __repr__(self):
+        return f'<Friendship {self.user_id}, {self.friend_id}>'
 
 
 class User(db.Model):
@@ -61,11 +72,18 @@ class User(db.Model):
             raise AssertionError("Username must be at least 3 characters long")
         return username
 
-    friendships = db.relationship('User', secondary=friendship_table,
+    # friendships = db.relationship('User', secondary=friendship_table,
+    #                               primaryjoin=(
+    #                                   friendship_table.c.user_id == id),
+    #                               secondaryjoin=(
+    #                                   friendship_table.c.friend_id == id),
+    #                               backref=db.backref('friends', lazy='dynamic'), lazy='dynamic')
+
+    friendships = db.relationship('User', secondary=Friendship.__table__,
                                   primaryjoin=(
-                                      friendship_table.c.user_id == id),
+                                      Friendship.user_id == id),
                                   secondaryjoin=(
-                                      friendship_table.c.friend_id == id),
+                                      Friendship.friend_id == id),
                                   backref=db.backref('friends', lazy='dynamic'), lazy='dynamic')
 
     def __repr__(self):

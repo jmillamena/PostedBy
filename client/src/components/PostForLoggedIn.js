@@ -395,7 +395,6 @@ const PostForLoggedIn = ({ userId }) => {
                     {post.author.username}
                   </Link>
                 </Card.Text>
-
                 {/* Display comments using the Comment component */}
                 <p>Comments:</p>
                 <div
@@ -411,7 +410,6 @@ const PostForLoggedIn = ({ userId }) => {
                       />
                     ))}
                 </div>
-
                 {/* Comment Form */}
                 {post.showCommentForm && (
                   <PostComment
