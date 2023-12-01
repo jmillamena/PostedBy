@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Button } from "react-bootstrap";
+import "./homestyle.css";
 
 const DeletePost = ({ postId, onDelete, userId }) => {
   const [deleteMessage, setDeleteMessage] = useState(null);
@@ -29,7 +31,9 @@ const DeletePost = ({ postId, onDelete, userId }) => {
 
   return (
     <div>
-      <button onClick={handleDelete}>Delete Post</button>
+      <Button className="delete-button" variant="danger" onClick={handleDelete}>
+        Delete Post
+      </Button>
       {deleteMessage && <p>{deleteMessage}</p>}
     </div>
   );

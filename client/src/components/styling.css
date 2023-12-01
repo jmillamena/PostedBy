@@ -21,3 +21,13 @@ beige: #f5f5dc
 .mr-auto {
   font-weight: bold;
 }
+.custom-submit-button {
+  background-color: #f4a460;
+  color: #fff;
+  border: 1px solid #007bff;
+  padding-top: 10px;
+}
+
+.sideheading {
+  color: #f4a460;
+}

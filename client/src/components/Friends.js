@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import FriendsCard from "./FriendsCard";
+import { InputGroup, FormControl } from "react-bootstrap";
 import "./homestyle.css";
 
 const Friends = ({ userId, token }) => {
@@ -41,12 +42,20 @@ const Friends = ({ userId, token }) => {
     <div>
       <br />
       <h2 className="homeTitle">Friends</h2>
-      <input
+      {/* <input
         type="text"
         placeholder="Search friends..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-      />
+      /> */}
+      <InputGroup className="mb-3">
+        <FormControl
+          type="text"
+          placeholder="Search friends..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </InputGroup>
       <div style={{ display: "flex", flexWrap: "wrap" }}>
         {filteredFriends.map((friend) => (
           <FriendsCard key={friend.id} friend={friend} />

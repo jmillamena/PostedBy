@@ -133,8 +133,9 @@ const PostForLoggedIn = ({ userId }) => {
                   />
                 )}
 
-                {/* Toggle comment form visibility */}
+                <br />
                 <Button
+                  className="custom-submit-button"
                   variant="primary"
                   onClick={() => handleToggleCommentForm(post.id)}
                 >

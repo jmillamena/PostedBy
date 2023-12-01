@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import axios from "axios";
-import { Alert } from "react-bootstrap";
+import { Alert, Button, Form } from "react-bootstrap";
+import "./styling.css";
 
 const PostComment = ({ post_id, isAuthenticated, onCommentSubmit }) => {
   const [comment, setComment] = useState("");
@@ -66,13 +67,28 @@ const PostComment = ({ post_id, isAuthenticated, onCommentSubmit }) => {
           {errorMessage}
         </Alert>
       )}
+      <br />
 
-      <textarea
+      {/* <textarea
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        placeholder="Type your comment here..."
+      /> */}
+      <Form.Control
+        as="textarea"
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         placeholder="Type your comment here..."
       />
-      <button onClick={handleCommentSubmit}>Submit Comment</button>
+      <br />
+      <Button
+        className="custom-submit-button"
+        variant="primary"
+        onClick={handleCommentSubmit}
+      >
+        Submit Comment
+      </Button>
+      <br />
     </div>
   );
 };

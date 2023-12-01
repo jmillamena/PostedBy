@@ -18,3 +18,26 @@ beige: #f5f5dc
 .sideheading {
   color: #f4a460;
 }
+
+.custom-post-form {
+  max-width: 400px; /* Adjust the max-width to your preference */
+  margin: 0 auto;
+  border: 1px solid #ddd; /* Add a 1px solid border with a light gray color */
+  padding: 20px;
+  background-color: #ffefd5; /* Center the form horizontally */
+}
+
+.custom-form-control {
+  margin-bottom: 10px; /* Add space below each form control */
+}
+
+.custom-submit-button {
+  background-color: #f4a460;
+  color: #fff;
+  border: 1px solid #007bff;
+}
+
+.delete-button {
+  background-color: #dcae96;
+  color: red;
+}
