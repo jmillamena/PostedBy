@@ -119,20 +119,46 @@ const UserProfile = ({ match }) => {
         </Alert>
       )}
       {isFriends ? (
-        <Button
-          className="custom-submit-button"
-          variant="primary"
-          onClick={() => setShowPostForm(!showPostForm)}
-        >
-          {showPostForm ? "Hide Post Form" : "Create Post"}
-        </Button>
+        //   <Button
+        //     className="custom-submit-button"
+        //     variant="primary"
+        //     onClick={() => setShowPostForm(!showPostForm)}
+        //   >
+        //     {showPostForm ? "Hide Post Form" : "Create Post"}
+        //   </Button>
+        // ) : (
+        //   <div>
+        //     <p>
+        //       You must be friends with {friendProfile?.username} to create a post.
+        //     </p>
+        //     <Button
+        //       className="custom-submit-button"
+        //       variant="success"
+        //       onClick={handleAddFriend}
+        //     >
+        //       Add Friend
+        //     </Button>
+        //   </div>
+        <div className="button-container">
+          {" "}
+          {/* Apply the margin to this div */}
+          <Button
+            className="custom-submit-button spaced-button"
+            variant="primary"
+            onClick={() => setShowPostForm(!showPostForm)}
+          >
+            {showPostForm ? "Hide Post Form" : "Create Post"}
+          </Button>
+        </div>
       ) : (
-        <div>
+        <div className="button-container">
+          {" "}
+          {/* Apply the margin to this div */}
           <p>
             You must be friends with {friendProfile?.username} to create a post.
           </p>
           <Button
-            className="custom-submit-button"
+            className="custom-submit-button spaced-button"
             variant="success"
             onClick={handleAddFriend}
           >

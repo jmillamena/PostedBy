@@ -69,7 +69,6 @@ const EditPost = ({ postId, onUpdate }) => {
 
   const handleEdit = async () => {
     try {
-      // Make a PATCH request to your API endpoint
       const response = await axios.patch(
         `http://127.0.0.1:5555/editpost/${postId}`,
         {

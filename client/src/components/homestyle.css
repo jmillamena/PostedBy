@@ -41,3 +41,10 @@ beige: #f5f5dc
   background-color: #dcae96;
   color: red;
 }
+.button-container {
+  margin-right: 10px;
+}
+
+.spaced-button {
+  margin-right: 10px;
+}
