@@ -5,6 +5,7 @@ import axios from "axios";
 import { Alert } from "react-bootstrap";
 import PostForm from "./PostForm";
 import { useAuth } from "./App";
+import "./homestyle.css";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -77,7 +78,9 @@ const CreatePost = () => {
 
   return (
     <div className="custom-create-post-form">
-      <h2>Create Post</h2>
+      <br />
+      <h2 className="homeTitle">Create Post</h2>
+
       {successMessage && <Alert variant="success">{successMessage}</Alert>}
       {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
       <PostForm onSubmit={handleFormSubmit} friends={friends} />

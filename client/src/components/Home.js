@@ -35,7 +35,9 @@ function Home() {
 
   return (
     <div>
+      <br />
       <h2 className="homeTitle">Explore Users</h2>
+      <br />
       <InputGroup className="mb-3">
         <FormControl
           placeholder="Search users..."

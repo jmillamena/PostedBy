@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useAuth } from "./App";
 import DeletePost from "./DeletePost";
 import EditPost from "./EditPost";
+import "./homestyle.css";
 
 const YourPosts = () => {
   const { userId } = useAuth();
@@ -77,7 +78,9 @@ const YourPosts = () => {
 
   return (
     <Container>
-      <h2>PostedBy You</h2>
+      <br />
+      <h2 className="homeTitle">PostedBy You</h2>
+      <br />
       <Row>
         {sortedPosts.map((post) => (
           <Col key={post.id} xs={12} md={4} className="mb-3">
@@ -102,12 +105,19 @@ const YourPosts = () => {
                     "Unknown user"
                   )}
                 </Card.Text>
-                <button onClick={() => toggleEditForm(post.id)}>
+                <br />
+                <Button
+                  variant="primary"
+                  onClick={() => toggleEditForm(post.id)}
+                  className="custom-submit-button"
+                >
                   {editFormsVisible[post.id] ? "Close Edit Form" : "Edit Post"}
-                </button>
+                </Button>
+                <br />
                 {editFormsVisible[post.id] && (
                   <EditPost postId={post.id} onUpdate={handleEdit} />
                 )}
+                <br />
                 <DeletePost
                   postId={post.id}
                   onDelete={handleDelete}
